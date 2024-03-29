@@ -1,45 +1,54 @@
 const knex = require("../db/connection.js");
 
-function listReservations() {
-  return knex("reservations").select("*");
-}
-
-function listReservationsByDate(date) {
-  return knex("reservations").where({ reservation_date: date }).select("*");
-}
-
-function searchReservationsByMobileNumber(mobile_number) {
+function list(reservation_date) {
   return knex("reservations")
-    .whereRaw(
-      "translate(mobile_number, '() -', '') like ?",
-      `%${mobile_number.replace(/\D/g, "")}%`
-    )
-    .select("*");
+    .select("*")
+    .where({ reservation_date })
+    .whereNot({ status: "finished" })
+    .orderBy("reservation_time");
 }
 
-function readReservation(reservation_id) {
-  return knex("reservations").where({ reservation_id }).first();
+function read(reservation_id) {
+  return knex("reservations").select("*").where({ reservation_id }).first();
 }
 
-function createReservation(reservation) {
+function create(reservation) {
   return knex("reservations")
     .insert(reservation)
     .returning("*")
     .then((createdRecords) => createdRecords[0]);
 }
 
-function updateReservation(reservation_id, updates) {
+function update(updatedRes) {
   return knex("reservations")
+    .select("*")
+    .where({ reservation_id: updatedRes.reservation_id })
+    .update(updatedRes, "*")
+    .then((createdRecords) => createdRecords[0]);
+}
+
+function updateStatus(reservation_id, status) {
+  return knex("reservations")
+    .select("*")
     .where({ reservation_id })
-    .update(updates, "*")
-    .then((updatedRecords) => updatedRecords[0]);
+    .update({ status: status }, "*")
+    .then((createdRecords) => createdRecords[0]);
+}
+
+function search(mobile_number) {
+  return knex("reservations")
+    .whereRaw(
+      "translate(mobile_number, '() -', '') like ?",
+      `%${mobile_number.replace(/\D/g, "")}%`
+    )
+    .orderBy("reservation_date");
 }
 
 module.exports = {
-  listReservations,
-  listReservationsByDate,
-  searchReservationsByMobileNumber,
-  readReservation,
-  createReservation,
-  updateReservation,
+  list,
+  read,
+  create,
+  update,
+  updateStatus,
+  search,
 };
