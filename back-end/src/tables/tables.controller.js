@@ -49,7 +49,7 @@ function hasValidCapacity(req, res, next) {
       message: `Capacity is missing`,
     });
   }
-  if (capacity < 1 || isNaN(capacity)) {
+  if (capacity < 1 || typeof capacity !== "number") {
     return next({
       status: 400,
       message: `Invalid capacity`,

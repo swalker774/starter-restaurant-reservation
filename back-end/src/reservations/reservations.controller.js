@@ -157,15 +157,16 @@ function isBooked(req, res, next) {
 async function reservationExists(req, res, next) {
   const reservation_id =
     req.params.reservation_id || (req.body.data || {}).reservation_id;
-  const reservation = await service.read(reservation_id);
+  const reservation = await service.read(parseInt(reservation_id));
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
+  } else {
+    return next({
+      status: 404,
+      message: `Reservation ${reservation_id} cannot be found.`,
+    });
   }
-  next({
-    status: 404,
-    message: `Reservation ${reservation_id} cannot be found.`,
-  });
 }
 
 async function list(req, res) {
