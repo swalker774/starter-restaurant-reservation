@@ -41,7 +41,7 @@ export const ReservationForm = ({
             <input
               id="mobile_number"
               name="mobile_number"
-              type="tel"
+              type="text"
               required={true}
               value={reservation.mobile_number}
               maxLength="100"
