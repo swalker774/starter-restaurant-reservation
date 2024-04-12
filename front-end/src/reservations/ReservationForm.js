@@ -29,7 +29,7 @@ export const ReservationForm = ({
             <input
               id="last_name"
               name="last_name"
-              type="text"
+              type="tel"
               required={true}
               value={reservation.last_name}
               maxLength="100"
