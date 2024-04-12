@@ -12,11 +12,7 @@ const tablesRouter = require("./tables/tables.router");
 
 const app = express();
 
-const corsOption = {
-  origin: "https://reservationfront.onrender.com/Dashboard",
-};
-
-app.use(cors(corsOption));
+app.use(cors());
 app.use(express.json());
 
 app.use("/reservations", reservationsRouter);
